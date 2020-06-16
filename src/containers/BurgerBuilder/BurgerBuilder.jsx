@@ -2,6 +2,7 @@ import React, { Component } from "react";
 import Burger from "../../components/Burger/Burger";
 import Aux from "../../hoc/Aux";
 import BuildControls from "../../components/Burger/BuildControls/BuildControls";
+import IngredientsContext from "./IngredientsContext";
 
 const INGREDIENTS_PRICES = {
   salad: 0.5,
@@ -34,13 +35,16 @@ class BurgerBuilder extends Component {
     };
     updatedIngredients[type] = updatedCount;
 
-    const priceAddition = INGREDIENTS_PRICES[type];
-    const updatedPrice = this.state.totalPrice + priceAddition * sign;
-    this.setState({
-      ingredients: updatedIngredients,
-      totalPrice: updatedPrice,
-    });
-    console.log("state after: ", this.state);
+    if (updatedCount >= 0) {
+      const priceAddition = INGREDIENTS_PRICES[type];
+      const updatedPrice = this.state.totalPrice + priceAddition * sign;
+      this.setState({
+        ingredients: updatedIngredients,
+        totalPrice: updatedPrice,
+      });
+    }
+
+    console.log("state: ", this.state);
   };
 
   addIngredientHandler = (type) => {
@@ -53,13 +57,15 @@ class BurgerBuilder extends Component {
 
   render() {
     return (
-      <Aux>
-        <Burger ingredients={this.state.ingredients} />
-        <BuildControls
-          addIngredient={this.addIngredientHandler}
-          removeIngredient={this.removeIngredientHandler}
-        />
-      </Aux>
+      <IngredientsContext.Provider value={this.state.ingredients}>
+        <Aux>
+          <Burger ingredients={this.state.ingredients} />
+          <BuildControls
+            addIngredient={this.addIngredientHandler}
+            removeIngredient={this.removeIngredientHandler}
+          />
+        </Aux>
+      </IngredientsContext.Provider>
     );
   }
 }
