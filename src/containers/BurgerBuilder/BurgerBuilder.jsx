@@ -23,6 +23,7 @@ class BurgerBuilder extends Component {
     },
     totalPrice: 4,
     purchasable: false,
+    purchasing: false,
   };
 
   updatePurchasableState = () => {
@@ -31,10 +32,6 @@ class BurgerBuilder extends Component {
       .map((igKey) => ingredients[igKey])
       .reduce((previousValue, currentValue) => previousValue + currentValue, 0);
 
-    console.log(
-      "BurgerBuilder -> updatePurchasableState -> ingredientSum",
-      ingredientSum
-    );
     this.setState({ purchasable: ingredientSum > 0 });
   };
 
@@ -62,10 +59,6 @@ class BurgerBuilder extends Component {
       );
     }
 
-    console.log(
-      "BurgerBuilder -> ingredientHandler -> updatedIngredients",
-      updatedIngredients
-    );
     this.updatePurchasableState();
   };
 
@@ -77,50 +70,32 @@ class BurgerBuilder extends Component {
     this.ingredientHandler(type, false);
   };
 
+  initPurchase = () => {
+    this.setState({ purchasing: true });
+  };
+
+  cancelPurchase = () => {
+    this.setState({ purchasing: false });
+  };
+
   render() {
     return (
       <IngredientsContext.Provider value={this.state.ingredients}>
         <Aux>
-          <Modal>
+          <Modal
+            show={this.state.purchasing}
+            cancelPurchase={this.cancelPurchase}
+          >
             <OrderSummary ingredients={this.state.ingredients} />
           </Modal>
-          <div class="modal fade" id="modal-id">
-            <div class="modal-dialog">
-              <div class="modal-content">
-                <div class="modal-header">
-                  <button
-                    type="button"
-                    class="close"
-                    data-dismiss="modal"
-                    aria-hidden="true"
-                  >
-                    &times;
-                  </button>
-                  <h4 class="modal-title">Modal title</h4>
-                </div>
-                <div class="modal-body"></div>
-                <div class="modal-footer">
-                  <button
-                    type="button"
-                    class="btn btn-default"
-                    data-dismiss="modal"
-                  >
-                    Close
-                  </button>
-                  <button type="button" class="btn btn-primary">
-                    Save changes
-                  </button>
-                </div>
-              </div>
-            </div>
-          </div>
-
           <Burger ingredients={this.state.ingredients} />
+          {/* <p>{JSON.stringify(this.state)}</p> */}
           <BuildControls
             addIngredient={this.addIngredientHandler}
             removeIngredient={this.removeIngredientHandler}
             price={this.state.totalPrice}
             purchasable={this.state.purchasable}
+            initPurchase={this.initPurchase}
           />
         </Aux>
       </IngredientsContext.Provider>
