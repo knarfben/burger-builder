@@ -4,7 +4,7 @@ import Backdrop from "../Backdrop/Backdrop";
 
 const modal = ({ show, cancelPurchase, children }) => (
   <>
-    {show ? <Backdrop cancelPurchase={cancelPurchase} /> : null}
+    {show ? <Backdrop clicked={cancelPurchase} /> : null}
     <div
       className={classes.Modal}
       style={{
